@@ -272,8 +272,15 @@ impl UIPreferences {
         let unit_factory = gtk::SignalListItemFactory::new();
         unit_factory.connect_setup(|_, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let label = gtk::Label::builder().width_chars(4).xalign(0.0).build();
-            item.set_child(Some(&label));
+            let label = gtk::Label::builder()
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .width_chars(4)
+                .max_width_chars(8)
+                .xalign(0.0)
+                .build();
+            let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+            container.append(&label);
+            item.set_child(Some(&container));
             item.property_expression("item")
                 .chain_property::<gtk::StringObject>("string")
                 .bind(&label, "label", gtk::Widget::NONE);
